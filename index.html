@@ -1,0 +1,1006 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gerador de Contrato — MNA Advogados</title>
+<style>
+:root{
+  --navy:#0F2F56; --navy-deep:#0B2440; --blue:#1A4579; --blue-light:#255997;
+  --gold:#DBC592; --gold-ink:#8A6B27;
+  --bg:#EEF1F4; --card:#FFFFFF; --line:#D9DFE5; --ink:#1C2530; --muted:#66707C;
+  --erro:#A32020;
+  --ui:"Figtree","Hanken Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:var(--ui);background:var(--bg);color:var(--ink);font-size:14px}
+button,input,select,textarea{font:inherit;color:inherit}
+
+/* ---------- topo ---------- */
+.topo{
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  padding:12px 20px;background:linear-gradient(90deg,#0F2F56 0%,#22538F 55%,#0F2F56 100%);
+  color:#fff;position:sticky;top:0;z-index:20;box-shadow:0 2px 10px rgba(15,47,86,.25)
+}
+.topo h1{margin:0;font-size:16px;font-weight:700;letter-spacing:.01em}
+.topo .marca{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:700}
+.topo .versao{font-size:11px;color:#C9D6E4;margin-left:auto}
+.acoes{display:flex;gap:8px;flex-wrap:wrap}
+.btn{
+  border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.08);color:#fff;
+  padding:8px 14px;border-radius:6px;cursor:pointer;font-weight:600;font-size:13px;white-space:nowrap
+}
+.btn:hover{background:rgba(255,255,255,.18)}
+.btn-ouro{background:var(--gold);border-color:var(--gold);color:#3A2E10}
+.btn-ouro:hover{background:#E7D6AC}
+.btn:disabled{opacity:.5;cursor:progress}
+
+/* ---------- layout ---------- */
+main{display:grid;grid-template-columns:minmax(360px,460px) 1fr;height:calc(100vh - 53px)}
+@media (max-width:900px){main{grid-template-columns:1fr;height:auto}}
+.painel{overflow-y:auto;padding:18px 20px 80px;background:var(--card);border-right:1px solid var(--line)}
+.palco{overflow-y:auto;padding:24px;display:flex;justify-content:center;align-items:flex-start}
+
+/* ---------- formulário ---------- */
+fieldset{border:1px solid var(--line);border-radius:8px;margin:0 0 16px;padding:12px 14px 14px}
+legend{font-weight:700;color:var(--navy);font-size:13px;padding:0 6px;letter-spacing:.02em}
+legend .cl{color:var(--gold-ink);font-weight:700;font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin:10px 0 4px}
+input[type=text],input[type=date],input[type=number],select,textarea{
+  width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:5px;background:#fff
+}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--blue-light);outline-offset:-1px;border-color:var(--blue-light)}
+textarea{resize:vertical;min-height:62px;line-height:1.45}
+.linha{display:grid;gap:10px}
+.l2{grid-template-columns:1fr 1fr}
+.l3{grid-template-columns:1fr 1fr 1fr}
+.l21{grid-template-columns:2fr 1fr}
+@media (max-width:520px){.l2,.l3,.l21{grid-template-columns:1fr}}
+.item{border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:6px;padding:8px 10px 12px;margin-bottom:10px;background:#FBFCFD}
+.item-topo{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.item-topo b{font-size:12px;color:var(--navy)}
+.mini{border:1px solid var(--line);background:#fff;border-radius:5px;padding:3px 9px;cursor:pointer;font-size:12px;font-weight:600;color:var(--muted)}
+.mini:hover{border-color:var(--blue-light);color:var(--navy)}
+.mini.perigo:hover{border-color:var(--erro);color:var(--erro)}
+.add{width:100%;border:1px dashed var(--line);background:#fff;border-radius:6px;padding:8px;cursor:pointer;font-weight:600;color:var(--navy);font-size:13px}
+.add:hover{border-color:var(--blue-light);background:#F4F8FC}
+.chk{display:flex;align-items:center;gap:8px;margin:0 0 2px;font-size:13px;font-weight:700;color:var(--navy)}
+.chk input{width:16px;height:16px;accent-color:var(--navy);margin:0}
+.corpo-chk{padding:2px 0 0 24px}
+.corpo-chk[hidden]{display:none}
+.dica{font-size:11.5px;color:var(--muted);margin:6px 0 0;line-height:1.5}
+.calc{font-size:11.5px;color:var(--gold-ink);font-weight:600;margin-top:4px}
+.alerta{font-size:11.5px;color:var(--erro);font-weight:600;margin-top:4px}
+.alerta[hidden],.calc[hidden]{display:none}
+
+/* ---------- folha ---------- */
+.folha{
+  width:210mm;background:#fff;box-shadow:0 6px 28px rgba(15,47,86,.18);
+  padding:25.4mm 19mm;font-family:Arial,Helvetica,"Liberation Sans",sans-serif;
+  font-size:10pt;line-height:1.22;color:#000;text-align:justify
+}
+.folha p{margin:0}
+.folha p.c{text-align:center}
+.folha p.vazio{height:1.22em}
+.folha b{font-weight:700}
+.folha u{text-decoration:underline}
+.quebra{margin:6mm -19mm;border-top:1px dashed #B9C3CE;text-align:center}
+.quebra span{position:relative;top:-.7em;background:#fff;padding:0 10px;font-family:var(--ui);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#9AA4AF}
+@media (max-width:900px){.folha{width:100%;padding:16px}}
+</style>
+</head>
+<body>
+
+<div class="topo">
+  <div>
+    <div class="marca">MNA Advogados</div>
+    <h1>Gerador de Contrato de Prestação de Serviços Jurídicos</h1>
+  </div>
+  <div class="acoes">
+    <button class="btn" id="b-exemplo" type="button">Exemplo</button>
+    <button class="btn" id="b-limpar" type="button">Limpar</button>
+    <button class="btn btn-ouro" id="b-word" type="button">Baixar Word (.docx)</button>
+  </div>
+  <div class="versao" id="versao"></div>
+</div>
+
+<main>
+  <form class="painel" id="form" autocomplete="off" onsubmit="return false">
+
+    <fieldset>
+      <legend>Contratante(s) <span class="cl">preâmbulo</span></legend>
+      <div id="lista-contratantes"></div>
+      <button class="add" type="button" data-add="contratante">+ Adicionar contratante</button>
+    </fieldset>
+
+    <fieldset>
+      <legend>Objeto <span class="cl">cláusula 1ª</span></legend>
+      <div id="lista-objeto"></div>
+      <button class="add" type="button" data-add="objeto">+ Adicionar serviço</button>
+    </fieldset>
+
+    <fieldset>
+      <legend>Remuneração <span class="cl">cláusula 2ª</span></legend>
+
+      <div class="item">
+        <label class="chk"><input type="checkbox" id="r-mensal-on"> 2.1 · Honorários Mensais (Retainer)</label>
+        <div class="corpo-chk" id="r-mensal-corpo">
+          <div class="linha l2">
+            <div><label for="r-mensal-valor">Valor mensal (R$)</label><input type="text" id="r-mensal-valor" inputmode="decimal" placeholder="3.800,00"></div>
+            <div><label for="r-mensal-dia">Dia do vencimento</label><input type="number" id="r-mensal-dia" min="1" max="31" placeholder="10"></div>
+          </div>
+          <div class="linha l2">
+            <div><label for="r-mensal-inicio">Primeira parcela em</label><input type="date" id="r-mensal-inicio"></div>
+            <div><label for="r-mensal-meses">Devidos por (meses)</label><input type="number" id="r-mensal-meses" min="1" max="600" placeholder="24"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="item">
+        <label class="chk"><input type="checkbox" id="r-exito-on"> 2.1 · Honorários de Êxito (Success Fee)</label>
+        <div class="corpo-chk" id="r-exito-corpo">
+          <label for="r-exito-perc">Percentual (%)</label>
+          <input type="text" id="r-exito-perc" inputmode="decimal" placeholder="10">
+          <label class="chk" style="margin-top:10px;font-size:12px"><input type="checkbox" id="r-exito-teto-on"> Limitar a um valor global</label>
+          <div class="corpo-chk" id="r-exito-teto-corpo">
+            <label for="r-exito-teto">Valor global até (R$)</label>
+            <input type="text" id="r-exito-teto" inputmode="decimal" placeholder="2.000.000,00">
+          </div>
+          <p class="dica">A base de cálculo é a do item 1.45 do Anexo I (proveito econômico bruto).</p>
+        </div>
+      </div>
+
+      <div class="item">
+        <label class="chk"><input type="checkbox" id="r-operacao-on"> 2.1 · Honorários de Operação</label>
+        <div class="corpo-chk" id="r-operacao-corpo">
+          <label for="r-operacao-valor">Valor mensal (R$)</label>
+          <input type="text" id="r-operacao-valor" inputmode="decimal" placeholder="50,00">
+        </div>
+      </div>
+
+      <div class="item">
+        <label class="chk"><input type="checkbox" id="r-fixos-on"> 2.1 · Honorários Fixos</label>
+        <div class="corpo-chk" id="r-fixos-corpo">
+          <label for="r-fixos-valor">Valor total (R$)</label>
+          <input type="text" id="r-fixos-valor" inputmode="decimal" placeholder="3.576,00">
+          <label class="chk" style="margin-top:10px;font-size:12px"><input type="checkbox" id="r-fixos-entrada-on"> Com entrada</label>
+          <div class="corpo-chk" id="r-fixos-entrada-corpo">
+            <label for="r-fixos-entrada">Entrada (R$)</label>
+            <input type="text" id="r-fixos-entrada" inputmode="decimal" placeholder="1.000,00">
+          </div>
+          <div class="linha l2" style="margin-top:10px">
+            <div><label for="r-fixos-parcelas">Nº de parcelas</label><input type="number" id="r-fixos-parcelas" min="1" max="120" placeholder="6"></div>
+            <div><label for="r-fixos-dia">Dia do vencimento</label><input type="number" id="r-fixos-dia" min="1" max="31" placeholder="20"></div>
+          </div>
+          <p class="calc" id="r-fixos-calc" hidden></p>
+          <p class="alerta" id="r-fixos-alerta" hidden></p>
+        </div>
+      </div>
+
+      <div class="item">
+        <label class="chk"><input type="checkbox" id="r-minimo-on"> 2.1 · Honorário Mínimo Garantido</label>
+        <div class="corpo-chk" id="r-minimo-corpo">
+          <label for="r-minimo-valor">Valor mínimo (R$)</label>
+          <input type="text" id="r-minimo-valor" inputmode="decimal" placeholder="50.000,00">
+          <p class="dica" id="r-minimo-dica">Compensa e não cumula com os honorários de êxito — depende deles.</p>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Vigência <span class="cl">cláusula 4ª</span></legend>
+      <label for="vig-meses">Prazo de vigência (meses)</label>
+      <input type="number" id="vig-meses" min="1" max="600" placeholder="24">
+    </fieldset>
+
+    <fieldset>
+      <legend>Disposições específicas <span class="cl">cláusula 6ª</span></legend>
+      <div id="lista-especificas"></div>
+      <button class="add" type="button" data-add="especifica">+ Adicionar disposição</button>
+      <p class="dica">Prevalecem sobre o Anexo I em caso de conflito (item 1.51).</p>
+    </fieldset>
+
+    <fieldset>
+      <legend>Fecho e assinatura</legend>
+      <div class="linha l21">
+        <div><label for="cidade">Cidade</label><input type="text" id="cidade" placeholder="Belo Horizonte"></div>
+        <div><label for="data">Data</label><input type="date" id="data"></div>
+      </div>
+    </fieldset>
+
+  </form>
+
+  <div class="palco"><div class="folha" id="folha"></div></div>
+</main>
+
+<script>
+"use strict";
+const MODELO = {"fixos":{"titulo":{"jc":"center","runs":[{"t":"CONTRATO DE PRESTAÇÃO DE SERVIÇOS JURÍDICOS","b":true,"u":false}]},"de_um_lado":{"jc":"both","runs":[{"t":"Pelo presente instrumento particular, de um lado, ","b":false,"u":false},{"t":"CONTRATANTE (S):","b":true,"u":false},{"t":" ","b":false,"u":false}]},"de_outro_lado":{"jc":"both","runs":[{"t":"E, de outro lado, ","b":false,"u":false},{"t":"CONTRATADO:","b":true,"u":false},{"t":" ","b":false,"u":false}]},"contratada":{"jc":"both","runs":[{"t":"MARQUES, NERI E ALMEIDA ADVOGADOS ASSOCIADOS","b":true,"u":false},{"t":" (“MNA Advogados Associados”) inscrita no CNPJ sob o nº 41.697.325/0001-52, com sede na Rua dos Timbiras, 1936, Sala 1603, Bairro Lourdes, CEP 30140-069, Belo Horizonte/MG, e-mail: contato@mnaadvocacia.com.br, celular: 55+ 31-3646-9162., neste ato representada por seu(s) sócio(s) administrador(es), doravante denominada ","b":false,"u":false},{"t":"CONTRATADO, PARTE CONTRATADA ou ESCRITÓRIO","b":true,"u":false},{"t":";","b":false,"u":false}]},"as_partes":{"jc":"both","runs":[{"t":"As partes, mutuamente contratantes, têm entre si justo e acertado o presente ","b":false,"u":false},{"t":"Contrato de Prestação de Serviços Jurídicos","b":true,"u":true},{"t":", que reger-se-á pelas cláusulas e condições seguintes:","b":false,"u":false}]},"cl1_titulo":{"jc":"both","runs":[{"t":"CLÁUSULA 1ª — DO OBJETO","b":false,"u":false}]},"cl1_1":{"jc":"both","runs":[{"t":"1.1.","b":true,"u":false},{"t":" A CONTRATADA prestará à CONTRATANTE os serviços jurídicos descritos a seguir:","b":false,"u":false}]},"cl1_2":{"jc":"both","runs":[{"t":"1.2.","b":true,"u":false},{"t":" Fica expressamente ajustado que quaisquer serviços jurídicos, extrajudiciais ou administrativos que não estejam clara e especificamente descritos nesta cláusula estão excluídos do escopo deste contrato, não gerando qualquer ônus ou obrigação para a CONTRATADA.","b":false,"u":false}]},"cl2_titulo":{"jc":"both","runs":[{"t":"CLÁUSULA 2ª — DAS REMUNERAÇÕES E DOS PAGAMENTOS","b":false,"u":false}]},"cl2_1":{"jc":"both","runs":[{"t":"2.1.","b":true,"u":false},{"t":" Pelos serviços descritos neste instrumento, a(s) PARTE (S) CONTRATANTE pagará (ão) à o escritório os honorários advocatícios na seguinte forma:","b":false,"u":false}]},"cl2_pagamentos":{"jc":"both","runs":[{"t":"","b":true,"u":false},{"t":"Os pagamentos serão realizados através de PIX nos dados bancários: conta corrente (12.315.218-6), agência 0001, banco Inter (077), através de chave PIX (CNPJ 41.697.325/0001/52), ou boleto bancário, sendo de responsabilidade do cliente o pagamento da taxa bancária, desde que formalizado o requerimento pela Contratante, em nome da sociedade de advogados Marques, Neri e Almeida Advogados Associados.","b":false,"u":false}]},"cl3_titulo":{"jc":"both","runs":[{"t":"CLÁUSULA 3ª — MULTA E PENALIDADES","b":false,"u":false}]},"cl3_1":{"jc":"both","runs":[{"t":"3.1.","b":true,"u":false},{"t":" O atraso em qualquer pagamento ensejará multa moratória de ","b":false,"u":false},{"t":"20% (vinte por cento) correspondente ao Valor Global do Contrato","b":true,"u":false},{"t":", acrescido de juros de ","b":false,"u":false},{"t":"2% (dois por cento) ao mês","b":true,"u":false},{"t":" e atualização monetária pelo IPCA-E até a data do efetivo pagamento.","b":false,"u":false}]},"cl4_titulo":{"jc":"both","runs":[{"t":"CLÁUSULA 4ª — VIGÊNCIA E DURAÇÃO","b":false,"u":false}]},"cl4_1":{"jc":"both","runs":[{"t":"4.1.","b":true,"u":false},{"t":" O presente contrato é celebrado por prazo determinado, tendo sua ","b":false,"u":false},{"t":"vigência inicial fixada em {{prazo}} meses, ou até a conclusão dos serviços","b":true,"u":false},{"t":" que serão contados a partir da data de sua assinatura. O prazo de vigência poderá ser prorrogado por igual período, de forma automática ou sucessiva, ","b":false,"u":false},{"t":"se não houver manifestação em sentido contrário pelas partes nos casos de contratos de consultoria","b":true,"u":false},{"t":", oportunidade em que deverá ser obrigatoriamente celebrado o respectivo Termo Aditivo contratual. ","b":false,"u":false}]},"cl4_2":{"jc":"both","runs":[{"t":"4.2.","b":true,"u":false},{"t":" Findo o prazo inicial de ","b":false,"u":false},{"t":"{{prazo}} meses","b":true,"u":false},{"t":" sem que haja manifestação escrita para a prorrogação por meio de aditivo, o contrato considerar-se-á encerrado, ressalvada a continuidade, as obrigações financeiras vincendas relativas aos honorários de êxito (Success Fee) decorrentes de proveitos econômicos gerados pela atuação da CONTRATADA.","b":false,"u":false}]},"cl5_titulo":{"jc":"both","runs":[{"t":"CLÁUSULA 5ª — RESCISÃO","b":true,"u":false}]},"cl5_1":{"jc":"both","runs":[{"t":"5.1.","b":true,"u":false},{"t":" As condições, hipóteses, prazos e formas de rescisão e distrato do presente instrumento regem-se integralmente pelas disposições constantes no Anexo I (Condições e Disposições Gerais) deste contrato. E no caso de rescisão do contrato, não caberá em nenhuma hipótese a restituição dos honorários advocatícios que tenham sido pagos.","b":false,"u":false}]},"cl6_titulo":{"jc":"both","runs":[{"t":"CLÁUSULA 6ª — DISPOSIÇÕES ESPECÍFICAS","b":true,"u":false}]},"cl6_1":{"jc":"both","runs":[{"t":"6.1.","b":true,"u":false},{"t":" Sem prejuízo das disposições gerais e das demais cláusulas deste instrumento e obrigações previstas em seu Anexo I, as partes estabelecem e concordam expressamente com as seguintes condições específicas: ","b":false,"u":false}]},"cl7_titulo":{"jc":"both","runs":[{"t":"CLÁUSULA 7ª — FORO","b":true,"u":false}]},"cl7_1":{"jc":"both","runs":[{"t":"7.1.","b":true,"u":false},{"t":" Caso surjam conflitos relacionados a este contrato, fica eleito o foro da Comarca de ","b":false,"u":false},{"t":"Belo Horizonte/MG","b":true,"u":false},{"t":", com exclusão de qualquer outro por mais privilegiado que seja, ficando no entanto facultado ao escritório optar pelo foro do domicílio da CONTRATANTE para a execução dos honorários, se assim lhe convier.","b":false,"u":false}]},"ass_label":{"jc":"both","runs":[{"t":"CONTRATANTE (S): ","b":true,"u":false}]},"ass_contratada_label":{"jc":"both","runs":[{"t":"CONTRATADO (A)","b":true,"u":false}]},"ass_contratada_nome":{"jc":"both","runs":[{"t":"MARQUES, NERI E ALMEIDA ADVOGADOS ASSOCIADOS","b":true,"u":false}]},"ass_contratada_cnpj":{"jc":"both","runs":[{"t":"CNPJ: 41.697.325/0001-52","b":true,"u":false}]},"test1":{"jc":"both","runs":[{"t":"TESTEMUNHA 1","b":true,"u":false}]},"test1_cpf":{"jc":"both","runs":[{"t":"CPF:\t     ","b":true,"u":false}]},"test2":{"jc":"both","runs":[{"t":"TESTEMUNHA 2","b":true,"u":false}]},"test2_cpf":{"jc":"both","runs":[{"t":"CPF:","b":true,"u":false}]},"anexo_titulo":{"jc":"center","runs":[{"t":"ANEXO I - CONDIÇÕES E DISPOSIÇÕES GERAIS DO CONTRATO DE PRESTAÇÃO DE SERVIÇOS JURÍDICOS","b":true,"u":false}]}},"anexo":[{"jc":"both","runs":[{"t":"Atos praticados por liberalidade. ","b":true,"u":false},{"t":"Em hipótese alguma, eventuais atos praticados por liberalidade pela CONTRATADA serão automaticamente incorporados neste instrumento como obrigações da CONTRATADA.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Resultado dos serviços. ","b":true,"u":false},{"t":"A CONTRATADA não garante o êxito quanto ao objetivo pretendido pela CONTRATANTE com os serviços contratados, sejam eles de natureza judicial, extrajudicial, administrativa ou de qualquer outra espécie admitida pelo Direito, estando a CONTRATANTE, no polo passivo, ativo, ou apenas como terceira interessada, plenamente ciente deste ponto da contratação do serviço, considerando que a atividade da CONTRATADA é uma atividade meio. A CONTRATANTE declara que está ciente e concorda com a disposição.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Data de pagamento nos domingos e feriados. ","b":true,"u":false},{"t":"Na hipótese da data do pagamento recair no sábado, domingo ou feriado (nacional) a data do vencimento das parcelas fica automaticamente prorrogada para o dia útil subsequente.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Não recebimento dos boletos e informações financeiras. ","b":true,"u":false},{"t":"Na hipótese da CONTRATANTE não ter recebido o boleto ou não ter solicitá-lo até a data do vencimento da parcela, os valores relativos aos honorários deverão ser pagos mediante transferência bancária para os dados bancários: conta corrente nº 12.315.218-6, agência nº 0001, Banco Inter nº 077, chave PIX (CNPJ) nº 41.697.325/0001-52. Todas as informações financeiras, incluindo-se mas não se limitando a solicitações de informações, novos boletos, e envio de comprovantes deverá ser direcionada ao .\t","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Acordos com a outra parte. ","b":true,"u":false},{"t":"Se a CONTRATANTE celebrar qualquer acordo entre ela e a outra parte, bem como por meio de pessoas relacionadas ou terceiros, ou ainda praticar qualquer ato relacionada à causa sem o conhecimento prévio e por escrito da CONTRATADA; a CONTRATADA estará excluída de qualquer responsabilidade, seja ela jurídica ou administrativa, sem que a ausência de responsabilidade implique em qualquer prejuízo quanto aos honorários pactuados, que permanecerão sendo devidos e passíveis de execução..","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Dissolução e morte dos profissionais da CONTRATADA. ","b":true,"u":false},{"t":"Caso haja morte ou incapacidade civil da CONTRATADA, seus sucessores ou representantes legais receberão os honorários na proporção do trabalho realizado, cujos critérios de proporcionalidade serão definidos pela CONTRATADA.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Dissolução e/ou morte da CONTRATANTE. ","b":true,"u":false},{"t":"Caso haja morte, ou incapacidade civil da CONTRATANTE, o espólio, seus sucessores, ou a massa falida no caso de extinção da CONTRATANTE pessoa jurídica, ficarão responsáveis pelo pagamento dos honorários que estejam em aberto pendentes de pagamento.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Erros Técnicos. ","b":true,"u":false},{"t":"A CONTRATADA não responderá de maneira alguma por prejuízos, erros técnicos, definição de estratégias ou tomadas de decisões prejudiciais aos interesses jurídicos e econômicos da CONTRATANTE, que a CONTRATADA não tenha dado causa.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Contratação de outros profissionais. ","b":true,"u":false},{"t":"Havendo a necessidade de contratação de profissionais de outras áreas, para atuação em procedimentos administrativos, extrajudiciais, arbitrais ou judiciais, a CONTRATANTE ficará responsável por arcar com os custos do profissional a ser contratado.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Conclusão do serviço e prestação de contas. ","b":true,"u":false},{"t":"A data de conclusão do serviço é a data de apresentação e/ou envio da prestação de contas a ser feita pela CONTRATADA. A CONTRATADA em qualquer uma das hipóteses de rescisão descritas neste instrumento estará obrigada a prestar suas contas. Caso a CONTRATANTE revoga o mandato da CONTRATADA e constitui um novo patrono antes da conclusão do objeto contratual, e o lucro econômico decorrente da investigação patrimonial, estratégia ou medida judicial iniciada pela CONTRATADA vier a se concretizar posteriormente, ainda que sob condução de outro(s) profissional(is), permanecerá devido à CONTRATADA o honorário de desenvolvimento proporcional previsto na {{refExito}}, na integralidade, por aplicação do princípio da causa eficiente, sem prejuízo dos honorários fixos e mensais vencidos e da multa rescisória cabível ","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Exoneração de responsabilidade da CONTRATADA.","b":true,"u":false},{"t":" O (A) CONTRATANTE e suas pessoas relacionadas deverão fornecer sob as penas da lei todos e quaisquer documentos solicitados pela CONTRATADA para a realização dos serviços, no prazo estipulado pela CONTRATADA bem como repassar à CONTRATADA, apenas e somente informações e documentos verdadeiros, legítimos, sem adulteração  e não omitir nenhuma informação, ou dado relevante, que serão utilizados para fundamentar petições judiciais, acordos e/ou outros documentos, sob pena da (s) CONTRATANTE (S) serem a(s) única (s) responsável (is) a suportar isoladamente sanções, incluindo-se, mas não se limitando a sanções criminais, cíveis e outras responsabilidades exonerando, bem como liberando a CONTRATADA de qualquer responsabilidade além de indenizar o escritório.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Despesas extraordinárias para a execução dos serviços. ","b":true,"u":false},{"t":"A CONTRATANTE deverá pagar tempestivamente todas as despesas necessárias à execução dos trabalhos (taxas, emolumentos, despesas cartorárias, certidões, custas,diligências, laudos técnicos, etc.), que lhe serão apresentadas através de recibos comprobatórios. Sendo necessária qualquer diligência em outra Comarca, a CONTRATANTE obriga- se ao adiantamento do pagamento das despesas necessárias, inclusive diárias de viagem sob pena de não realização da diligência.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Armazenamento de comprovantes de pagamentos. ","b":true,"u":false},{"t":"É dever da CONTRATANTE guardar os respectivos comprovantes de pagamento de todas as despesas relacionadas a execução dos serviços, sob pena de arcar isoladamente com as responsabilidades pelo não pagamento, ou pelo não armazenamento do comprovante de pagamento e ainda os enviar à CONTRATADA sempre que os respectivos comprovantes de pagamento foram solicitados pela CONTRATADA.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Pagamento de parcelas de acordos judiciais e extrajudiciais. ","b":true,"u":false},{"t":"Na hipótese de ser celebrado acordo, no qual a CONTRATANTE é parte, onde for imposto à CONTRATANTE realizar o pagamento de mais de 1 (uma) parcela do acordo à parte contrária, no caso de processo judicial, ou procedimento extrajudicial de qualquer natureza, é dever da CONTRATANTE realizar os pagamentos, ou fazer repasses nas datas do acordo, estando à CONTRATADA eximida de lembrar ou informar à CONTRATANTE, sobre a data dos pagamentos do acordo.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Pagamento de taxas, custas, guias recursais e outros:","b":true,"u":false},{"t":" Nos casos em que a CONTRATADA, em representação processual da CONTRATANTE, for intimada a recolher custas judiciais, preparos recursais, taxas, emolumentos e demais outros pagamentos que são relacionados a prazos processuais, a CONTRATADA comunicará à CONTRATANTE, encaminhando por e-mail ou por WhatsApp, as respectivas guias e a data do prazo, o qual será de responsabilidade pelo pagamento única e exclusivamente da CONTRATANTE, sendo que qualquer ausência de pagamento ou envio fora do prazo não poderá ser imputado à CONTRATADA. ","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Verificação de Canais Oficiais. ","b":true,"u":false},{"t":"A CONTRATANTE declara-se expressamente ciente do risco decorrente de fraudes praticadas por terceiros (Golpe do Falso Advogado) e reconhece que os únicos canais oficiais e legítimos da CONTRATADA para o envio de relatórios, dados bancários, chaves PIX, guias de custas ou boletos são, exclusivamente: Telefone/WhatsApp Oficial: (31) 3646-9162 e E-mail Oficial:  Constitui obrigação estrita e inafastável da CONTRATANTE confirmar a autenticidade de qualquer instrução de pagamento, alteração de chave PIX ou emissão de boletos antes de efetuar qualquer transferência ou quitação. Para tanto, a CONTRATANTE obriga-se a realizar confirmação prévia por meio de ligação telefônica ou videochamada diretamente para os números oficiais estipulados acima, ou, facultativamente, comparecer presencialmente à sede da CONTRATADA para a retirada dos documentos físicos de cobrança. O descumprimento do dever de confirmação prévia por parte da CONTRATANTE ensejará sua exclusiva e integral responsabilidade financeira e jurídica por eventuais pagamentos realizados a terceiros fraudadores e estelionatários. A CONTRATADA fica totalmente exonerada de qualquer dever de ressarcimento, abatimento de honorários, compensação de valores ou reparação de danos, mantendo-se hígida a obrigação da CONTRATANTE de quitar os honorários contratados perante a CONTRATADA nas formas e prazos pactuados neste instrumento.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Endereço atualizado. ","b":true,"u":false},{"t":"É obrigação do (a) CONTRATANTE manter o seu endereço de e-mail, celular, telefone fixo e endereço residencial sempre atualizado, informando à CONTRATADA qualquer alteração dos endereços aqui mencionados, sob pena de ser considerada válida, ou recebida o envio de documentos, incluindo, mas não se limitando à notificação, intimação, documentos e guias no endereço eletrônico (e-mail) ou contato telefônico (WhatsApp) descritos no preâmbulo.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Realização dos pagamentos. ","b":true,"u":false},{"t":"É obrigação do (a) CONTRATANTE realizar os pagamentos dos honorários nas datas acordadas e na forma contratada, bem como guardar todos os comprovantes de pagamento feitos à CONTRATADA.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Deveres éticos da CONTRATADA.","b":true,"u":false},{"t":" A CONTRATADA deverá prestar o serviço objeto do presente contrato com zelo, esmero e dedicação; prestar informações à CONTRATANTE acerca do andamento processual, bem como audiências designadas e decisões proferidas, sempre que expressamente solicitado por escrito pela CONTRATANTE, ficando desde já facultado a CONTRATADA responder às solicitações aqui mencionadas em até 2 (dois) dias úteis; e não praticar atos atentatórios contra a boa-fé do (a) CONTRATANTE.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Descumprimento de obrigações. ","b":true,"u":false},{"t":"Havendo o descumprimento de qualquer obrigação definida neste instrumento, autorizará a parte prejudicada (adimplente com o contrato) a rescindir o contrato.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Rescisão do contrato. ","b":true,"u":false},{"t":"O contrato poderá ser rescindido a qualquer tempo, motivada ou imotivadamente pelas Partes, bastando que uma Parte notifique a outra Parte com antecedência prévia de 30 (trinta) dias nos endereços eletrônicos mencionados no preâmbulo deste contrato no caso de rescisão iniciada pelo Contratante, ou antecedência prévia de 10 (dez) dias nos casos de rescisão iniciada pelo escritório. Havendo a comunicação da rescisão do contrato, os serviços serão automaticamente interrompidos e os poderes conferidos no instrumento de procuração dos processos em curso, serão automaticamente revogados, para os fins legais.A rescisão do contrato motivada ou imotivadamente, não afastará a cobrança dos honorários vencidos, bem como os vincendos, caso o objeto do contrato já tiver sido cumprido pela CONTRATADA parcial ou integralmente. Nos casos de cumprimento parcial do contrato, será realizada prestação de contas, onde será calculado a proporcionalidade do serviço realizado e eventualmente valor restante em aberto de acordo com os critérios definidos pelo escritório considerando as fases do processo judicial ou negociação.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Rescisão imotivada:","b":true,"u":false},{"t":" Nos casos de rescisão imotivada pela CONTRATANTE não serão restituídos, em hipótese alguma, os honorários já pagos, sendo, ainda facultada à CONTRATADA a cobrança de indenização complementar 10% (dez por cento), sobre o valor remanescente do contrato, caso este seja por prazo determinado. Caso o contrato seja por prazo indeterminado, o valor da multa será equivalente a 3 (três) mensalidades alusivas aos honorários ajustados.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Rescisão motivada:","b":true,"u":false},{"t":" são consideradas causas de rescisão motivada incluindo, mas não se limitando: (i) por parte da CONTRATANTE: inadimplemento financeiro, ocultação de fatos, declaração falsa, provas/documentações fraudulentas, exigência de práticas ilícitas, ofensas, agressões e falta de urbanidade; (ii) por parte da CONTRATADA: desídia profissional (omissão, negligência, erro grave, abandono de causa), cometimento de infrações ético-disciplinares; ofensas, agressões e falta de urbanidade. Aquele que der causa à rescisão motivada na prática de conduta exemplificada acima, que são hipóteses não taxativas, facultado à outra parte a rescisão contrato, que será feita por notificação. Será, ainda, de responsabilidade da parte notificada, isto é, aquela que deu causa à rescisão, a multa equivalente a 10% (dez por cento), sobre o valor remanescente, caso o contrato seja por prazo determinado; ou, caso o contrato seja por prazo indeterminado, o equivalente a 3 (três) mensalidades alusivas aos honorários ajustados. Serão devidos, ainda, os valores dos honorários vencidos e vincendos, na forma definida do item “21”, “Rescisão do contrato”. ","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Onerosidade excessiva. ","b":true,"u":false},{"t":"Se por qualquer motivo, ou condição futura em razão do volume de serviços o contrato se tornar excessivamente oneroso para a CONTRATADA, as partes poderão ajustar e renegociar os valores da prestação de serviço, a fim de ajustar os interesses econômicos e financeiros das partes. Não havendo acordo, a Contratada poderá rescindir o escritório sem qualquer ônus, multa ou penalidade para o escritório.  ","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Boa-fé objetiva. ","b":true,"u":false},{"t":"As partes declaram expressamente que compreenderam cada uma das cláusulas deste instrumento e que não têm dúvidas sobre o teor do contrato, suas cláusulas, ou seus itens, respeitando-se os deveres da boa-fé objetiva, presente nas relações contratuais. As partes declaram ainda que não tiveram a sua vontade diminuída em razão do instrumento e que tiveram a oportunidade de discutir as cláusulas do contrato.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Lei 8.078/90.","b":true,"u":false},{"t":" Em hipótese alguma, as regras da Lei 8.078/90 serão aplicáveis ou poderão ser utilizadas para interpretar a presente relação jurídica, ainda que por analogia.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Duração do Procedimento","b":true,"u":false},{"t":". Salvo disposição contratual específica, a CONTRATADA não se compromete a estipular o tempo de duração dos procedimentos mencionados neste instrumento.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Renúncia de Procuração","b":true,"u":false},{"t":". A renúncia, ou a revogação dos poderes conferidos através de procuração por parte da CONTRATADA em hipótese alguma afastará a aplicação das disposições estabelecidas na cláusula segunda.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Despesas de responsabilidade da CONTRATADA","b":true,"u":false},{"t":". Todas as despesas relativas à execução do escopo exposto estão incluídas no valor dos honorários, tais como telefonemas, deslocamentos dentro das Cidades de Belo Horizonte, além de despesas com materiais de escritório, como cópias reprográficas dentre outras. Estarão, no entanto, excluídas despesas relativas à execução dos serviços, incluindo, mas não se limitando a viagens e/ou deslocamentos fora do município de Belo Horizonte, despesas com custas judiciais, taxas, emolumentos cartorários e consultas junto a órgãos públicos. Caso as despesas já incluídas no escopo do contrato estejam onerosamente excessivas, a exemplo que incluem, mas não se limitam a deslocamentos reincidentes para despachos, visitas técnicas, reuniões e outros, a CONTRATADA comunicará à CONTRATANTE, que passará a ser a responsável por arcar com as despesas mediante a apresentação de comprovantes de despesas, que incluem mas não se limitam a notas fiscais, recibos, que podem se tornar passíveis de serem inseridos em eventual execução dos honorários advocatícios. ","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Comunicação","b":true,"u":false},{"t":". Toda e qualquer comunicação e/ou formalização poderá ser feita digitalmente, incluindo mas não se limitando ao e-mail e WhatsApp nos telefones e e-mails no preâmbulo. Fica definido como horário de comunicação entre as partes, o horário de Brasília de 9:00 (nove) horas da manhã até às 18:00 (dezoito) horas da noite (horário de Brasília) de segunda-feira até sexta- feira. A escuta de áudios enviados por meio de WhatsApp será uma mera faculdade da CONTRATADA, devendo as partes priorizarem o envio de mensagem escrita ou entrar em contato por ligação. Qualquer resposta, ou envio de comunicação por parte da CONTRATADA fora dos horários aqui estipulados, são mera liberalidade, não podendo em hipótese alguma ser confundidos como obrigação da CONTRATADA.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Solicitação de demandas","b":true,"u":false},{"t":": Para melhor organização da CONTRATADA, caso não haja resposta das demandas solicitadas nos grupos de WhatsApp ou no WhatsApp pessoal dos representantes da CONTRATADA, dentro do prazo de 24 horas, fica a CONTRATANTE obrigada formalizar a demanda copiando para o e-mail: r ou outro meio sugerido pelo escritório;;","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Ferramentas de Inteligência Artificial (IA)","b":true,"u":false},{"t":": A CONTRATANTE autoriza expressamente a CONTRATADA a utilizar ferramentas e soluções baseadas em Inteligência Artificial (IA) em todas as fases, etapas e entregáveis dos serviços prestados.\t","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Sigilo","b":true,"u":false},{"t":". As informações deste contrato, as estratégias que serão repassadas pela CONTRATADA, os dados da vida pessoal da CONTRATANTE, inclusive o seu endereço residência e seus negócios são sigilosos, e a atividade prestada pela CONTRATADA é sigilosa, salvo quando expressamente autorizado pelas partes, sobre o repasse das informações a terceiros, devendo a autorização se dar por escrito. O conteúdo deste contrato não poderá ser divulgado pelas partes. A parte que violar esta disposição e causar dano a outrem perante a terceiros indenizará a parte prejudicada.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Reuniões. ","b":true,"u":false},{"t":"O atendimento da CONTRATANTE e eventuais reuniões presenciais que se fizerem necessárias, serão realizadas no escritório da CONTRATADA localizado na Rua dos Timbiras 1936, sala 1603, Lourdes, Belo Horizonte/MG, ou através de atendimento online (preferencialmente).","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Acordo integral","b":true,"u":false},{"t":". Todo e qualquer outro entendimento anteriormente assimilado pelas partes ficará excluído, prevalecendo sobre todo entendimento anterior, os exatos e taxativos termos deste contrato estando o Poder Judiciário, obrigado a interpretar as cláusulas deste instrumento literalmente.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Título Executivo","b":true,"u":false},{"t":". As partes concordam, que os honorários, incluindo-se mas não se limitando a indenizações, e outras penalidades mencionados neste instrumento, serão reconhecidos como dívida certa, líquida e exigível, dispensando, portanto, eventual fase de conhecimento.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Retenção. ","b":true,"u":false},{"t":"Na hipótese da CONTRATANTE possuir qualquer débito em relação à CONTRATADA referente ao contrato de prestação de serviços, qualquer proveito econômico, depósito em juízo, ou créditos de qualquer natureza por mais genéricos que sejam poderão ser retidos pela CONTRATADA para o pagamento dos honorários em aberto deste instrumento.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Viagens. ","b":true,"u":false},{"t":"Na hipótese de os profissionais da CONTRATADA tiverem que realizar qualquer viagem para além dos honorários estabelecidos na cláusula segunda, serão pagos os honorários adicionais pelo valor mínimo de R$950,00 (novecentos e cinquenta reais), além dos honorários já fixados na CLÁUSULA SEGUNDA podendo variar de acordo com a distância do destino da viagem, desde que autorizado pelo CONTRATANTE.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Da proteção de dados pessoais (LGPD). ","b":true,"u":false},{"t":"As PARTES declaram-se cientes e comprometem-se a cumprir a Lei Geral de Proteção de Dados Pessoais (Lei nº 13.709/2018 - LGPD), garantindo que o tratamento de dados decorrente deste contrato limitar-se-á estritamente às finalidades de prestação dos serviços jurídicos, representação em juízo e cumprimento de obrigações legais ou regulatórias. A CONTRATADA compromete-se a manter o sigilo, a confidencialidade e a segurança dos dados recebidos, não os compartilhando com terceiros não autorizados — ressalvados órgãos judiciais, autoridades públicas e parceiros estritamente necessários à execução do objeto —, armazenando-os pelo tempo indispensável à prestação dos serviços e aos prazos legais prescricionais, e comunicando à CONTRATANTE qualquer incidente relevante de segurança no prazo de até 48 (quarenta e oito) horas.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Eleição de foro. ","b":true,"u":false},{"t":"Os efeitos da cláusula de eleição de foro poderão ser afastados somente pela CONTRATADA, na hipótese de a CONTRATADA optar por executar os seus honorários no foro da sua sede, ou em qualquer outro de sua preferência.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Autocomposição prévia. ","b":true,"u":false},{"t":"Salvo nos casos de execução de honorários inadimplidos, as partes concordam em mitigar o seu direito de ação e para tanto, antes das partes eventualmente litigarem sobre os termos deste contrato, estarão obrigadas a tentar realizar uma tentativa prévia de conciliação no prazo de 10 (dez) dias a contar da notificação enviada mediante comprovação, sob pena de que, na hipótese de a ação ser ajuizada sem a tentativa de negociação prévia, a ação ajuizada seja extinta sem resolução de mérito, desde que a outra parte invoque os efeitos desta disposição.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Recuperação judicial/falência. ","b":true,"u":false},{"t":"Na hipótese de haver o pedido de recuperação judicial, ou a falência da Contratante, os serviços serão automaticamente revogados, suspensos e o contrato será rescindido de pleno direito, independentemente de notificação prévia, comprometendo-se a Contratante a inserir a remuneração devida pelo escritório no valor informado na Classe I - Trabalhistas, considerando a natureza alimentar da verba.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Assinatura digital. ","b":true,"u":false},{"t":"E, por estarem de pleno acordo, as partes declaram que leram e, portanto, assinam todas as páginas do presente contrato firmado entre pessoas jurídicas assinado eletronicamente pelo aplicativo ZapSign ou qualquer outro que vier a ser utilizado pelo escritório. ","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Custos de Investigação Patrimonial e Diligências.","b":true,"u":false},{"t":" Todas as despesas, taxas, emolumentos, custas com cartórios, juntas comerciais, emissão de certidões, contratação de peritos, sistemas de busca patrimonial aprofundada (due diligence) e diligências externas necessárias à execução do objeto contratual ","b":false,"u":false},{"t":"serão integralmente custeadas pelos CONTRATANTES","b":true,"u":false},{"t":", mediante prévio orçamento e aprovação, devendo o repouso dos valores ocorrer de forma tempestiva para não acarretar paralisação nos trabalhos do escritório.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Base de Cálculo dos Honorários de Êxito. ","b":true,"u":false},{"t":"Para fins de interpretação da Cláusula Segunda, o percentual de honorários de êxito incidirá sobre o proveito econômico bruto auferido pelo (s) CONTRATANTE (S), sem nenhuma dedução de impostos, taxas, custas ou despesas, abrangendo mas não se limitando a: (i) ativos Financeiros e Monetários que corresponde ao valor nominal mencionado em acordo, acordos judiciais homologados, sentenças e decisões judiciais definitivas, com juros e correção;  (ii) Ativos Não Financeiros que incluem mas não se limitam a bens, quotas, produtos que corresponde ao valor de mercado atualizado ou o valor efetivo do negócio (o que for maior) na data da liberação, recuperação, partilha ou alienação de cotas, imóveis, veículos ou produtos explorados; (iii) Redução de Passivos que corresponde ao deságio e/ou desconto obtido, correspondente à diferença positiva entre o valor da dívida originalmente cobrada (ou garantia) incluindo seus consectários moratórios e o montante efetivamente pago ou acordado para sua quitação, os critérios de avaliação correspondem aos valores informações ou repassados pelo cliente. ","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Valor Global do Contrato. ","b":true,"u":false},{"t":"Para fins de interpretação da Cláusula Segunda, Valor Global do Contrato é o somatório total e integral da entrada e todas as parcelas do contrato, sempre que houver pactuadas na Cláusula Segunda, somado-se ainda ao montante total estimado ou apurado a título de honorários de êxito (Success Fee), sempre que verificado o Fato Gerador correspondente ao proveito econômico auferido pelos CONTRATANTES.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Fato Gerador. ","b":true,"u":false},{"t":"Para fins de interpretação da Cláusula Segunda, Fato Gerador significa o evento que formaliza a conclusão de uma operação, demanda ou da prestação dos serviços, estabelecendo o momento em que os honorários de êxito (Success Fee) tornam-se exigíveis. Este evento abrange, de forma exemplificativa, a data de assinatura de acordos (incluindo transações judiciais ou extrajudiciais, independentemente de homologação), o trânsito em julgado de decisões judiciais, ou o encerramento definitivo de processos administrativos. ","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Relativização Voluntária da Impenhorabilidade e Constrição Pessoal  ","b":true,"u":false},{"t":"A CONTRATANTE e os seus GARANTIDORES/COOBRIGADOS declaram e reconhecem expressamente que a totalidade dos honorários advocatícios estipulados neste instrumento possui natureza alimentar estrita, equiparando-se integralmente aos créditos trabalhistas para todos os fins de preferência, concorrência e prioridade de pagamento. Em caso de inadimplemento dos honorários pactuados, a CONTRATANTE e suas controladas, coligadas, subsidiárias renunciam expressamente a impenhorabilidade prevista em lei, e autorizam prévia, expressa e irrevogavelmente a penhora judicial direta de até 30% (trinta por cento) do seu faturamento bruto mensal, incluindo recebíveis de cartão de crédito, travas bancárias, direitos creditórios e fluxos de caixa, aposentadorias, saldos em conta poupança, VGBL, PGBL, outras aposentadorias privadas, salários, pró-labores, remunerações, honorários, proventos de aposentadoria, pensões, dividendos e distribuição de lucros, renunciando a qualquer alegação de inviabilização da atividade empresarial ou exceção de onerosidade.  ","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Vencimento Antecipado das Parcelas.","b":true,"u":false},{"t":" \"O atraso, por prazo superior a 15 (quinze) dias, no pagamento de qualquer parcela dos honorários mensais, fixos ou de operação prevista na Cláusula 2ª, autoriza a CONTRATADA, a seu exclusivo exclusivo, a considerar antecipadamente vencidas todas as demais parcelas ainda não pagas, tornando-se imediatamente exigível o saldo devedor integral, atualizado monetariamente e acrescido dos encargos moratórios pactuados, independentemente de remessa prévia adicional além da já prevista para a constituição em mora.","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Reajuste Anual do Honorário Mensal.","b":true,"u":false},{"t":" \"O valor do honorário mensal fixado na Cláusula Segunda será reajustado anualmente, na data de aniversário deste contrato, pela variação acumulada do IPCA/IBGE no período, ou, na sua falta ou extinção, pelo índice oficial que vier a substituí-lo, independentemente de notificação ou aditivo, passando o novo valor a vigorar automaticamente a partir da competência subsequente. ","b":false,"u":false}]},{"jc":"both","runs":[{"t":"Divergências entre Condições Gerais do Anexo I e Disposições Específicas.","b":true,"u":false},{"t":" Em caso de conflito ou divergência entre qualquer disposição específica prevista na Cláusula Sexta com as disposições do Anexo I, prevalecerão as regras da Cláusula Sexta.  ","b":false,"u":false}]}]};
+const VERSAO = "v1 · 31-08-2026";
+document.getElementById("versao").textContent = VERSAO;
+
+/* =====================================================================
+   1. Números e datas por extenso
+   ===================================================================== */
+const UNI = ["","um","dois","três","quatro","cinco","seis","sete","oito","nove"];
+const ADEZ = ["dez","onze","doze","treze","quatorze","quinze","dezesseis","dezessete","dezoito","dezenove"];
+const DEZ = ["","","vinte","trinta","quarenta","cinquenta","sessenta","setenta","oitenta","noventa"];
+const CEM = ["","cento","duzentos","trezentos","quatrocentos","quinhentos","seiscentos","setecentos","oitocentos","novecentos"];
+const MESES = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+const ORD = ["","primeiro","segundo","terceiro","quarto","quinto","sexto","sétimo","oitavo","nono","décimo"];
+
+function grupo(n){
+  if(n === 100) return "cem";
+  const c = Math.floor(n/100), r = n%100, p = [];
+  if(c) p.push(CEM[c]);
+  if(r < 10 && r > 0) p.push(UNI[r]);
+  else if(r >= 10 && r < 20) p.push(ADEZ[r-10]);
+  else if(r >= 20){ const d = Math.floor(r/10), u = r%10; p.push(u ? DEZ[d]+" e "+UNI[u] : DEZ[d]); }
+  return p.join(" e ");
+}
+function extenso(n){
+  n = Math.round(n);
+  if(n === 0) return "zero";
+  if(n < 0) return "menos " + extenso(-n);
+  const bi = Math.floor(n/1e9), mi = Math.floor((n%1e9)/1e6),
+        mil = Math.floor((n%1e6)/1000), un = n%1000, p = [];
+  if(bi) p.push(bi === 1 ? "um bilhão" : grupo(bi)+" bilhões");
+  if(mi) p.push(mi === 1 ? "um milhão" : grupo(mi)+" milhões");
+  if(mil) p.push(mil === 1 ? "mil" : grupo(mil)+" mil");
+  if(un) p.push(grupo(un));
+  if(p.length === 1) return p[0];
+  const liga = (un === 0 || un < 100 || un%100 === 0) ? " e " : ", ";
+  return p.slice(0,-1).join(", ") + liga + p[p.length-1];
+}
+/** "dois milhões DE reais", mas "dois mil reais" — a preposição só entra
+    quando o número termina em milhão/bilhão redondo. */
+function precisaDe(n){
+  return n >= 1e6 && (n % 1e6 === 0);
+}
+function reaisExtenso(v){
+  const inteiro = Math.floor(v + 1e-9), cent = Math.round((v - inteiro)*100);
+  let s = inteiro === 0 ? ""
+        : (inteiro === 1 ? "um real"
+        : extenso(inteiro) + (precisaDe(inteiro) && !cent ? " de reais" : " reais"));
+  if(cent){
+    const c = cent === 1 ? "um centavo" : extenso(cent)+" centavos";
+    s = s ? s+" e "+c : c;
+  }
+  return s || "zero real";
+}
+function moeda(v){
+  return "R$" + v.toLocaleString("pt-BR",{minimumFractionDigits:2, maximumFractionDigits:2});
+}
+/** "R$3.800,00 (três mil e oitocentos reais)" */
+function valorPorExtenso(v){ return moeda(v)+" ("+reaisExtenso(v)+")"; }
+
+function percentualExtenso(p){
+  const inteiro = Math.floor(p + 1e-9);
+  const dec = String(Math.round((p - inteiro)*100)).replace(/0$/,"");
+  let s = extenso(inteiro);
+  if(p - inteiro > 1e-9) s += " vírgula " + extenso(parseInt(dec,10));
+  return s + " por cento";
+}
+/** "10% (dez por cento)" — aceita 12,5 */
+function percentual(p){
+  const txt = Number.isInteger(p) ? String(p) : String(p).replace(".",",");
+  return txt+"% ("+percentualExtenso(p)+")";
+}
+function ordinalDia(d){
+  if(d <= 10) return ORD[d];
+  if(d < 20) return "décimo "+ORD[d-10];
+  if(d === 20) return "vigésimo";
+  if(d < 30) return "vigésimo "+ORD[d-20];
+  if(d === 30) return "trigésimo";
+  return "trigésimo primeiro";
+}
+/** "10º (décimo)" */
+function dia(d){ return d+"º ("+ordinalDia(d)+")"; }
+/** "24 (vinte e quatro)" */
+function quant(n){ return n+" ("+extenso(n)+")"; }
+
+function partesData(iso){
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || "");
+  if(!m) return null;
+  return {a:+m[1], m:+m[2], d:+m[3]};
+}
+function dataCurta(iso){
+  const p = partesData(iso);
+  return p ? String(p.d).padStart(2,"0")+"/"+String(p.m).padStart(2,"0")+"/"+p.a : "__/__/____";
+}
+function dataExtensa(iso){
+  const p = partesData(iso);
+  return p ? p.d+" de "+MESES[p.m-1]+" de "+p.a : "____ de __________ de ____";
+}
+/** Lê "3.800,00", "3800.00", "R$ 3.800" — devolve número ou NaN. */
+function numero(txt){
+  if(txt === null || txt === undefined) return NaN;
+  let s = String(txt).replace(/[R$\s ]/gi,"");
+  if(s === "") return NaN;
+  if(s.indexOf(",") > -1) s = s.replace(/\./g,"").replace(",",".");
+  else if((s.match(/\./g)||[]).length > 1) s = s.replace(/\./g,"");
+  const v = parseFloat(s);
+  return isNaN(v) ? NaN : v;
+}
+
+/* =====================================================================
+   2. Estado
+   ===================================================================== */
+function contratanteVazio(){
+  return {tipo:"pj", genero:"f", nome:"", doc:"", endereco:"", representante:"", email:"", celular:""};
+}
+function itemVazio(){ return {titulo:"", texto:""}; }
+
+function estadoVazio(){
+  return {
+    contratantes:[contratanteVazio()],
+    objeto:[itemVazio()],
+    remuneracao:{
+      mensal:{on:false, valor:"", dia:"", inicio:"", meses:""},
+      exito:{on:false, percentual:"", temTeto:false, teto:""},
+      operacao:{on:false, valor:""},
+      fixos:{on:false, valor:"", temEntrada:false, entrada:"", parcelas:"", dia:""},
+      minimo:{on:false, valor:""}
+    },
+    vigencia:{meses:""},
+    especificas:[itemVazio()],
+    cidade:"Belo Horizonte",
+    data:""
+  };
+}
+let estado = estadoVazio();
+
+const EXEMPLO = {
+  contratantes:[{
+    tipo:"pj", genero:"f", nome:"CONSTRUTORA MODELO LTDA.", doc:"00.000.000/0001-00",
+    endereco:"Rua dos Timbiras, 1936, Sala 1603, Bairro Lourdes, Belo Horizonte/MG",
+    representante:"FULANO DE TAL", email:"contato@construtoramodelo.com.br", celular:"31 90000-0000"
+  }],
+  objeto:[
+    {titulo:"Análise Estratégica e Acompanhamento Processual.", texto:"Acompanhamento dos processos judiciais em curso e definição da estratégia de atuação."},
+    {titulo:"Investigação Patrimonial:", texto:"Levantamento de bens e apuração de atos de esvaziamento patrimonial."}
+  ],
+  remuneracao:{
+    mensal:{on:true, valor:"3.800,00", dia:"10", inicio:"2026-09-10", meses:"24"},
+    exito:{on:true, percentual:"10", temTeto:true, teto:"2.000.000,00"},
+    operacao:{on:true, valor:"50,00"},
+    fixos:{on:true, valor:"3.576,00", temEntrada:true, entrada:"1.000,00", parcelas:"6", dia:"20"},
+    minimo:{on:false, valor:""}
+  },
+  vigencia:{meses:"24"},
+  especificas:[{titulo:"Investigação Patrimonial:", texto:"Levantamento de bens e apuração de atos de esvaziamento patrimonial."}],
+  cidade:"Belo Horizonte",
+  data:new Date().toISOString().slice(0,10)
+};
+
+/* =====================================================================
+   3. Montagem do documento
+   Um único modelo de blocos alimenta a prévia e o .docx — o que se vê
+   na tela é literalmente o que sai no Word.
+   ===================================================================== */
+function R(t, b, u){ return {t:t, b:!!b, u:!!u}; }
+function P(jc, runs){ return {jc:jc||"both", runs:runs.filter(function(r){return r.t !== "";})}; }
+const VAZIO = function(){ return {jc:"both", runs:[]}; };
+const QUEBRA = function(){ return {quebra:true, jc:"both", runs:[]}; };
+
+function aplicar(txt, subs){
+  return txt.replace(/\{\{(\w+)\}\}/g, function(_, k){
+    return (subs && subs[k] !== undefined) ? subs[k] : "";
+  });
+}
+function fixo(id, subs){
+  const f = MODELO.fixos[id];
+  return {jc:f.jc, runs:f.runs.map(function(r){ return R(aplicar(r.t, subs), r.b, r.u); })};
+}
+
+/** Ordem canônica das modalidades da Cláusula 2. */
+const MODALIDADES = ["mensal","exito","operacao","fixos","minimo"];
+
+function modalidadesAtivas(){
+  const rem = estado.remuneracao;
+  return MODALIDADES.filter(function(k){
+    if(k === "minimo") return rem.minimo.on && rem.exito.on;
+    return rem[k].on;
+  });
+}
+/** Nº da subcláusula de êxito, para as remissões do Anexo I e do 2.1.5. */
+function refExito(){
+  const ativas = modalidadesAtivas();
+  const i = ativas.indexOf("exito");
+  return i < 0 ? "Cláusula Segunda" : "Cláusula 2.1."+(i+1);
+}
+
+function blocoContratante(c, i, total){
+  const pj = c.tipo === "pj";
+  const fem = pj || c.genero === "f";
+  const nome = (c.nome || "NOME DO CONTRATANTE").trim();
+  const runs = [R("("+(i+1)+") "+nome+", ", true, false)];
+  let corpo = "inscrit"+(fem?"a":"o")+" no "+(pj?"CNPJ":"CPF")+" n. "+(c.doc || "____________")+
+              ", com endereço na "+(c.endereco || "____________");
+  if(pj) corpo += ", por seu representante legal: "+(c.representante || "____________");
+  corpo += "; e-mail: "+(c.email || "____________")+", Cel. "+(c.celular || "____________")+
+           ", doravante denominad"+(fem?"a":"o")+" ";
+  runs.push(R(corpo, false, false));
+  runs.push(R("CONTRATANTE, PARTE CONTRATANTE ou CLIENTE", true, false));
+  runs.push(R(i === total-2 ? "; e" : ";", false, false));
+  return P("both", runs);
+}
+
+function blocoItem(it){
+  const runs = [];
+  const titulo = (it.titulo || "").trim();
+  const texto = (it.texto || "").trim();
+  if(titulo) runs.push(R(titulo, true, false));
+  if(texto) runs.push(R((titulo ? " " : "") + texto, false, false));
+  if(!runs.length) runs.push(R("____________", false, false));
+  return P("both", runs);
+}
+
+function blocoRemuneracao(chave, n){
+  const rem = estado.remuneracao, pre = "2.1."+n+". ";
+  const runs = [];
+
+  if(chave === "mensal"){
+    const m = rem.mensal, v = numero(m.valor), d = parseInt(m.dia,10), meses = parseInt(m.meses,10);
+    runs.push(R(pre+"Honorários Mensais (Retainer):", true, false));
+    runs.push(R(" ", false, false));
+    runs.push(R((isNaN(v) ? "R$____ (____)" : valorPorExtenso(v))+" mensais", true, true));
+    runs.push(R(", com vencimento no "+(isNaN(d) ? "__º (____)" : dia(d))+" dia de cada mês, iniciando-se em "+
+                dataCurta(m.inicio)+" devidos pelo prazo de "+(isNaN(meses) ? "__ (____)" : quant(meses))+" meses.", false, false));
+  }
+
+  if(chave === "exito"){
+    const e = rem.exito, p = numero(e.percentual), teto = numero(e.teto);
+    runs.push(R(pre+"Honorários de Êxito (Success Fee):", true, false));
+    runs.push(R(" Será devido o percentual de ", false, false));
+    runs.push(R(isNaN(p) ? "__% (____ por cento)" : percentual(p), true, true));
+    if(e.temTeto){
+      runs.push(R(" para operações e recuperações de ativos cujo valor global seja de até "+
+                  (isNaN(teto) ? "R$____ (____)" : valorPorExtenso(teto))+".", false, false));
+    }else{
+      runs.push(R(" sobre o proveito econômico auferido pela CONTRATANTE, apurado na forma do item 1.45 do Anexo I.", false, false));
+    }
+  }
+
+  if(chave === "operacao"){
+    const v = numero(rem.operacao.valor);
+    runs.push(R(pre+"Honorários de Operação. ", true, false));
+    runs.push(R("Além dos valores acima deverá ser pago, mensalmente, ", false, false));
+    runs.push(R("o valor de "+(isNaN(v) ? "R$____ (____)" : valorPorExtenso(v))+", até o encerramento do caso.", true, true));
+  }
+
+  if(chave === "fixos"){
+    const f = rem.fixos, total = numero(f.valor), entrada = f.temEntrada ? numero(f.entrada) : 0;
+    const np = parseInt(f.parcelas,10), d = parseInt(f.dia,10);
+    const vp = (!isNaN(total) && !isNaN(entrada) && np > 0) ? (total - entrada)/np : NaN;
+    runs.push(R(pre+"Honorários Fixos. ", true, false));
+    runs.push(R("Será devido os honorários fixos no valor de ", false, false));
+    runs.push(R(isNaN(total) ? "R$____ (____)" : valorPorExtenso(total), true, false));
+    let cauda = " que deverão ser pagos ";
+    if(f.temEntrada){
+      cauda += "mediante entrada de "+(isNaN(entrada) ? "R$____ (____)" : valorPorExtenso(entrada))+
+               " a ser paga no dia subsequente a assinatura do contrato e mais ";
+    }else{
+      cauda += "em ";
+    }
+    cauda += (isNaN(np) ? "__ (____)" : quant(np))+" parcelas iguais e sucessivas, no valor de "+
+             (isNaN(vp) ? "R$____ (____)" : valorPorExtenso(vp))+" no "+
+             (isNaN(d) ? "__º (____)" : dia(d))+" dia de cada mês até o pagamento total das parcelas.";
+    runs.push(R(cauda, false, false));
+  }
+
+  if(chave === "minimo"){
+    const v = numero(rem.minimo.valor);
+    runs.push(R(pre+"Honorário Mínimo Garantido.", true, false));
+    runs.push(R(" Independentemente do resultado financeiro específico apurado ao final da prestação dos serviços, "+
+                "fica assegurado à CONTRATADA o direito à obtenção de honorário mínimo no valor de "+
+                (isNaN(v) ? "R$____ (____)" : valorPorExtenso(v))+", devido no Fato Gerador, o qual será compensado e não "+
+                "cumulado com o valor apurado pela aplicação dos percentuais da "+refExito()+", prevalecendo o que for maior.",
+                false, false));
+  }
+  return P("both", runs);
+}
+
+function montarDocumento(){
+  const b = [];
+  const ref = refExito();
+  const prazo = estado.vigencia.meses ? quant(parseInt(estado.vigencia.meses,10)) : "__ (____)";
+
+  b.push(fixo("titulo"));
+  b.push(VAZIO());
+  b.push(fixo("de_um_lado"));
+  b.push(VAZIO());
+  estado.contratantes.forEach(function(c,i){ b.push(blocoContratante(c, i, estado.contratantes.length)); });
+  b.push(fixo("de_outro_lado"));
+  b.push(fixo("contratada"));
+  b.push(fixo("as_partes"));
+
+  /* --- Cláusula 1ª --- */
+  b.push(fixo("cl1_titulo"));
+  b.push(fixo("cl1_1"));
+  estado.objeto.forEach(function(it){ b.push(blocoItem(it)); });
+  b.push(fixo("cl1_2"));
+
+  /* --- Cláusula 2ª --- */
+  b.push(fixo("cl2_titulo"));
+  b.push(fixo("cl2_1"));
+  const ativas = modalidadesAtivas();
+  ativas.forEach(function(k,i){ b.push(blocoRemuneracao(k, i+1)); });
+  const pg = fixo("cl2_pagamentos");
+  pg.runs.unshift(R("2.2. ", pg.runs.length ? pg.runs[0].b : false, false));
+  b.push(pg);
+
+  /* --- Cláusulas 3ª a 7ª --- */
+  b.push(fixo("cl3_titulo"));
+  b.push(fixo("cl3_1"));
+  b.push(fixo("cl4_titulo"));
+  b.push(fixo("cl4_1", {prazo:prazo}));
+  b.push(fixo("cl4_2", {prazo:prazo}));
+  b.push(fixo("cl5_titulo"));
+  b.push(fixo("cl5_1"));
+  b.push(fixo("cl6_titulo"));
+  b.push(fixo("cl6_1"));
+  estado.especificas.forEach(function(it){ b.push(blocoItem(it)); });
+  b.push(fixo("cl7_titulo"));
+  b.push(fixo("cl7_1"));
+
+  /* --- fecho e assinaturas --- */
+  b.push(VAZIO());
+  b.push(P("both",[R((estado.cidade || "____________")+", "+dataExtensa(estado.data), false, false)]));
+  b.push(VAZIO());
+  b.push(VAZIO());
+  b.push(fixo("ass_label"));
+  estado.contratantes.forEach(function(c){
+    b.push(VAZIO());
+    b.push(P("both",[R((c.nome || "____________").trim(), true, false)]));
+    b.push(P("both",[R((c.tipo === "pj" ? "CNPJ: " : "CPF: ")+(c.doc || "____________"), true, false)]));
+  });
+  b.push(VAZIO());
+  b.push(VAZIO());
+  b.push(fixo("ass_contratada_label"));
+  b.push(fixo("ass_contratada_nome"));
+  b.push(fixo("ass_contratada_cnpj"));
+  b.push(VAZIO());
+  b.push(VAZIO());
+  b.push(fixo("test1"));
+  b.push(fixo("test1_cpf"));
+  b.push(VAZIO());
+  b.push(VAZIO());
+  b.push(fixo("test2"));
+  b.push(fixo("test2_cpf"));
+
+  /* --- Anexo I --- */
+  b.push(QUEBRA());
+  b.push(fixo("anexo_titulo"));
+  b.push(VAZIO());
+  MODELO.anexo.forEach(function(item, i){
+    const runs = [R("1."+(i+1)+". ", true, false)];
+    item.runs.forEach(function(r){ runs.push(R(aplicar(r.t, {refExito:ref}), r.b, r.u)); });
+    b.push(P(item.jc, runs));
+    if(i < MODELO.anexo.length - 1) b.push(VAZIO());
+  });
+  return b;
+}
+
+/* =====================================================================
+   4. Prévia
+   ===================================================================== */
+function escHtml(s){
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+function renderPrevia(blocos){
+  const html = blocos.map(function(bl){
+    if(bl.quebra) return '<div class="quebra"><span>quebra de página</span></div>';
+    if(!bl.runs.length) return '<p class="vazio"></p>';
+    const corpo = bl.runs.map(function(r){
+      let t = escHtml(r.t).replace(/\t/g,"&#9;&#9;");
+      if(r.u) t = "<u>"+t+"</u>";
+      if(r.b) t = "<b>"+t+"</b>";
+      return t;
+    }).join("");
+    return '<p'+(bl.jc === "center" ? ' class="c"' : "")+'>'+corpo+"</p>";
+  }).join("");
+  document.getElementById("folha").innerHTML = html;
+}
+
+/* =====================================================================
+   5. Escrita do .docx
+   OOXML montado à mão e compactado com CompressionStream — sem
+   biblioteca externa, o arquivo continua autocontido.
+   ===================================================================== */
+function escXml(s){
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+const NS_W = 'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" '+
+             'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"';
+const CAB = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n';
+
+function paragrafoXml(bl){
+  if(bl.quebra){
+    return '<w:p><w:r><w:br w:type="page"/></w:r></w:p>';
+  }
+  let x = '<w:p><w:pPr><w:jc w:val="'+(bl.jc === "center" ? "center" : "both")+'"/></w:pPr>';
+  bl.runs.forEach(function(r){
+    let rpr = "";
+    if(r.b) rpr += "<w:b/>";
+    if(r.u) rpr += '<w:u w:val="single"/>';
+    const pedacos = r.t.split("\t");
+    x += "<w:r>" + (rpr ? "<w:rPr>"+rpr+"</w:rPr>" : "");
+    pedacos.forEach(function(p, i){
+      if(i) x += "<w:tab/>";
+      if(p) x += '<w:t xml:space="preserve">'+escXml(p)+"</w:t>";
+    });
+    x += "</w:r>";
+  });
+  return x + "</w:p>";
+}
+
+function documentoXml(blocos){
+  return CAB + "<w:document "+NS_W+"><w:body>"
+    + blocos.map(paragrafoXml).join("")
+    + '<w:sectPr><w:footerReference r:id="rId2" w:type="default"/>'
+    + '<w:pgSz w:w="11900" w:h="16860" w:orient="portrait"/>'
+    + '<w:pgMar w:top="1440" w:right="1080" w:bottom="1440" w:left="1080" w:header="708" w:footer="708"/>'
+    + '<w:pgNumType w:start="1"/></w:sectPr>'
+    + "</w:body></w:document>";
+}
+const STYLES_XML = CAB + "<w:styles "+NS_W+">"
+  + "<w:docDefaults><w:rPrDefault><w:rPr>"
+  + '<w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:eastAsia="Arial" w:cs="Arial"/>'
+  + '<w:sz w:val="20"/><w:szCs w:val="20"/><w:lang w:val="pt-BR"/>'
+  + "</w:rPr></w:rPrDefault><w:pPrDefault><w:pPr>"
+  + '<w:widowControl w:val="0"/><w:spacing w:before="0" w:after="0" w:line="240" w:lineRule="auto"/>'
+  + '<w:jc w:val="both"/>'
+  + "</w:pPr></w:pPrDefault></w:docDefaults>"
+  + '<w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/></w:style>'
+  + "</w:styles>";
+
+const FOOTER_XML = CAB + "<w:ftr "+NS_W+'><w:p><w:pPr><w:jc w:val="right"/></w:pPr>'
+  + '<w:r><w:fldChar w:fldCharType="begin"/></w:r>'
+  + '<w:r><w:instrText xml:space="preserve"> PAGE </w:instrText></w:r>'
+  + '<w:r><w:fldChar w:fldCharType="separate"/></w:r>'
+  + "<w:r><w:t>1</w:t></w:r>"
+  + '<w:r><w:fldChar w:fldCharType="end"/></w:r></w:p></w:ftr>';
+
+const CONTENT_TYPES = CAB + '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+  + '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+  + '<Default Extension="xml" ContentType="application/xml"/>'
+  + '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>'
+  + '<Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>'
+  + '<Override PartName="/word/footer1.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml"/>'
+  + "</Types>";
+
+const RELS = CAB + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+  + '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>'
+  + "</Relationships>";
+
+const DOC_RELS = CAB + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+  + '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>'
+  + '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/footer" Target="footer1.xml"/>'
+  + "</Relationships>";
+
+/* --- zip --- */
+const CRC_TAB = (function(){
+  const t = new Uint32Array(256);
+  for(let n = 0; n < 256; n++){
+    let c = n;
+    for(let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+    t[n] = c >>> 0;
+  }
+  return t;
+})();
+function crc32(buf){
+  let c = 0xFFFFFFFF;
+  for(let i = 0; i < buf.length; i++) c = CRC_TAB[(c ^ buf[i]) & 0xFF] ^ (c >>> 8);
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+async function deflateRaw(buf){
+  if(typeof CompressionStream === "undefined") return null;
+  try{
+    const fluxo = new Blob([buf]).stream().pipeThrough(new CompressionStream("deflate-raw"));
+    return new Uint8Array(await new Response(fluxo).arrayBuffer());
+  }catch(e){ return null; }
+}
+async function zip(arquivos){
+  const enc = new TextEncoder(), partes = [], central = [];
+  let offset = 0, n = 0;
+  for(const a of arquivos){
+    const nome = enc.encode(a.nome), cru = enc.encode(a.texto), crc = crc32(cru);
+    let dados = await deflateRaw(cru), metodo = 8;
+    if(!dados || dados.length >= cru.length){ dados = cru; metodo = 0; }
+
+    const lh = new DataView(new ArrayBuffer(30));
+    lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true); lh.setUint16(6, 0x0800, true);
+    lh.setUint16(8, metodo, true); lh.setUint32(14, crc, true);
+    lh.setUint32(18, dados.length, true); lh.setUint32(22, cru.length, true);
+    lh.setUint16(26, nome.length, true);
+    partes.push(new Uint8Array(lh.buffer), nome, dados);
+
+    const ch = new DataView(new ArrayBuffer(46));
+    ch.setUint32(0, 0x02014b50, true); ch.setUint16(4, 20, true); ch.setUint16(6, 20, true);
+    ch.setUint16(8, 0x0800, true); ch.setUint16(10, metodo, true); ch.setUint32(16, crc, true);
+    ch.setUint32(20, dados.length, true); ch.setUint32(24, cru.length, true);
+    ch.setUint16(28, nome.length, true); ch.setUint32(42, offset, true);
+    central.push(new Uint8Array(ch.buffer), nome);
+
+    offset += 30 + nome.length + dados.length;
+    n++;
+  }
+  const tamCentral = central.reduce(function(s,p){ return s + p.length; }, 0);
+  const fim = new DataView(new ArrayBuffer(22));
+  fim.setUint32(0, 0x06054b50, true);
+  fim.setUint16(8, n, true); fim.setUint16(10, n, true);
+  fim.setUint32(12, tamCentral, true); fim.setUint32(16, offset, true);
+
+  return new Blob(partes.concat(central, [new Uint8Array(fim.buffer)]),
+    {type:"application/vnd.openxmlformats-officedocument.wordprocessingml.document"});
+}
+
+function nomeArquivo(){
+  const c = estado.contratantes[0];
+  const cliente = (c && c.nome ? c.nome : "CONTRATANTE").trim()
+    .replace(/[\\/:*?"<>|]/g,"").replace(/\s+/g," ").slice(0,60);
+  const p = partesData(estado.data) || partesData(new Date().toISOString().slice(0,10));
+  const d = String(p.d).padStart(2,"0")+"-"+String(p.m).padStart(2,"0")+"-"+p.a;
+  return "Contrato MNA - "+cliente+" - "+d+".docx";
+}
+
+async function baixarDocx(){
+  const botao = document.getElementById("b-word");
+  botao.disabled = true;
+  const rotulo = botao.textContent;
+  botao.textContent = "Gerando…";
+  try{
+    const blocos = montarDocumento();
+    const blob = await zip([
+      {nome:"[Content_Types].xml",        texto:CONTENT_TYPES},
+      {nome:"_rels/.rels",                texto:RELS},
+      {nome:"word/document.xml",          texto:documentoXml(blocos)},
+      {nome:"word/_rels/document.xml.rels", texto:DOC_RELS},
+      {nome:"word/styles.xml",            texto:STYLES_XML},
+      {nome:"word/footer1.xml",           texto:FOOTER_XML}
+    ]);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = nomeArquivo();
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+  }catch(e){
+    alert("Não foi possível gerar o arquivo: "+e.message);
+    throw e;
+  }finally{
+    botao.disabled = false;
+    botao.textContent = rotulo;
+  }
+}
+
+/* =====================================================================
+   6. Formulário
+   ===================================================================== */
+const CAMPOS = [
+  ["r-mensal-on","remuneracao.mensal.on","bool"],
+  ["r-mensal-valor","remuneracao.mensal.valor","txt"],
+  ["r-mensal-dia","remuneracao.mensal.dia","txt"],
+  ["r-mensal-inicio","remuneracao.mensal.inicio","txt"],
+  ["r-mensal-meses","remuneracao.mensal.meses","txt"],
+  ["r-exito-on","remuneracao.exito.on","bool"],
+  ["r-exito-perc","remuneracao.exito.percentual","txt"],
+  ["r-exito-teto-on","remuneracao.exito.temTeto","bool"],
+  ["r-exito-teto","remuneracao.exito.teto","txt"],
+  ["r-operacao-on","remuneracao.operacao.on","bool"],
+  ["r-operacao-valor","remuneracao.operacao.valor","txt"],
+  ["r-fixos-on","remuneracao.fixos.on","bool"],
+  ["r-fixos-valor","remuneracao.fixos.valor","txt"],
+  ["r-fixos-entrada-on","remuneracao.fixos.temEntrada","bool"],
+  ["r-fixos-entrada","remuneracao.fixos.entrada","txt"],
+  ["r-fixos-parcelas","remuneracao.fixos.parcelas","txt"],
+  ["r-fixos-dia","remuneracao.fixos.dia","txt"],
+  ["r-minimo-on","remuneracao.minimo.on","bool"],
+  ["r-minimo-valor","remuneracao.minimo.valor","txt"],
+  ["vig-meses","vigencia.meses","txt"],
+  ["cidade","cidade","txt"],
+  ["data","data","txt"]
+];
+function ler(caminho){
+  return caminho.split(".").reduce(function(o,k){ return o ? o[k] : undefined; }, estado);
+}
+function gravar(caminho, valor){
+  const ks = caminho.split(".");
+  const alvo = ks.slice(0,-1).reduce(function(o,k){ return o[k]; }, estado);
+  alvo[ks[ks.length-1]] = valor;
+}
+function lerFormulario(){
+  CAMPOS.forEach(function(c){
+    const el = document.getElementById(c[0]);
+    gravar(c[1], c[2] === "bool" ? el.checked : el.value);
+  });
+}
+function pintarFormulario(){
+  CAMPOS.forEach(function(c){
+    const el = document.getElementById(c[0]);
+    const v = ler(c[1]);
+    if(c[2] === "bool") el.checked = !!v; else el.value = v === undefined ? "" : v;
+  });
+  pintarListas();
+}
+
+/* --- listas repetíveis --- */
+const LISTAS = {
+  contratante:{chave:"contratantes", alvo:"lista-contratantes", rotulo:"Contratante", novo:contratanteVazio},
+  objeto:{chave:"objeto", alvo:"lista-objeto", rotulo:"Serviço", novo:itemVazio},
+  especifica:{chave:"especificas", alvo:"lista-especificas", rotulo:"Disposição", novo:itemVazio}
+};
+function campo(tipo, lista, i, chave, rotulo, extra){
+  const id = "f-"+lista+"-"+i+"-"+chave;
+  const valor = escHtml(String(estado[LISTAS[lista].chave][i][chave] || ""));
+  const attrs = 'id="'+id+'" data-lista="'+lista+'" data-i="'+i+'" data-campo="'+chave+'" '+(extra||"");
+  const corpo = tipo === "textarea"
+    ? "<textarea "+attrs+">"+valor+"</textarea>"
+    : '<input type="text" '+attrs+' value="'+valor+'">';
+  return '<label for="'+id+'">'+rotulo+"</label>"+corpo;
+}
+function pintarListas(){
+  Object.keys(LISTAS).forEach(function(lista){
+    const cfg = LISTAS[lista], itens = estado[cfg.chave];
+    document.getElementById(cfg.alvo).innerHTML = itens.map(function(it,i){
+      let corpo;
+      if(lista === "contratante"){
+        const pj = it.tipo === "pj";
+        corpo =
+          '<div class="linha l2"><div><label for="f-contratante-'+i+'-tipo">Tipo</label>'+
+          '<select id="f-contratante-'+i+'-tipo" data-lista="contratante" data-i="'+i+'" data-campo="tipo">'+
+            '<option value="pj"'+(pj?" selected":"")+'>Pessoa jurídica</option>'+
+            '<option value="pf"'+(!pj?" selected":"")+'>Pessoa física</option></select></div>'+
+          '<div'+(pj?' hidden':'')+'><label for="f-contratante-'+i+'-genero">Tratamento</label>'+
+          '<select id="f-contratante-'+i+'-genero" data-lista="contratante" data-i="'+i+'" data-campo="genero">'+
+            '<option value="m"'+(it.genero==="m"?" selected":"")+'>Masculino</option>'+
+            '<option value="f"'+(it.genero==="f"?" selected":"")+'>Feminino</option></select></div></div>'+
+          campo("input","contratante",i,"nome", pj ? "Razão social" : "Nome completo")+
+          '<div class="linha l2"><div>'+campo("input","contratante",i,"doc", pj ? "CNPJ" : "CPF")+'</div>'+
+          '<div>'+campo("input","contratante",i,"celular","Celular")+"</div></div>"+
+          campo("input","contratante",i,"endereco","Endereço (sem o “na”)")+
+          (pj ? campo("input","contratante",i,"representante","Representante legal") : "")+
+          campo("input","contratante",i,"email","E-mail");
+      }else{
+        corpo = campo("input",lista,i,"titulo","Título (sai em negrito)")+
+                campo("textarea",lista,i,"texto","Descrição");
+      }
+      return '<div class="item"><div class="item-topo"><b>'+cfg.rotulo+" "+(i+1)+"</b>"+
+        (itens.length > 1 ? '<button class="mini perigo" type="button" data-del="'+lista+'" data-i="'+i+'">remover</button>' : "")+
+        "</div>"+corpo+"</div>";
+    }).join("");
+  });
+}
+
+/* --- reações de interface --- */
+function ajustarInterface(){
+  [["r-mensal-on","r-mensal-corpo"],["r-exito-on","r-exito-corpo"],
+   ["r-exito-teto-on","r-exito-teto-corpo"],["r-operacao-on","r-operacao-corpo"],
+   ["r-fixos-on","r-fixos-corpo"],["r-fixos-entrada-on","r-fixos-entrada-corpo"],
+   ["r-minimo-on","r-minimo-corpo"]].forEach(function(par){
+    document.getElementById(par[1]).hidden = !document.getElementById(par[0]).checked;
+  });
+
+  // o mínimo garantido só existe se houver êxito com que compensar
+  const exito = estado.remuneracao.exito.on;
+  const min = document.getElementById("r-minimo-on");
+  min.disabled = !exito;
+  min.parentElement.style.opacity = exito ? "1" : ".5";
+  document.getElementById("r-minimo-dica").textContent = exito
+    ? "Compensa e não cumula com os honorários de êxito, prevalecendo o maior."
+    : "Indisponível: depende dos Honorários de Êxito estarem ligados.";
+  if(!exito) document.getElementById("r-minimo-corpo").hidden = true;
+
+  // valor da parcela dos honorários fixos é calculado, não digitado
+  const f = estado.remuneracao.fixos;
+  const total = numero(f.valor), entrada = f.temEntrada ? numero(f.entrada) : 0, np = parseInt(f.parcelas,10);
+  const calc = document.getElementById("r-fixos-calc"), alerta = document.getElementById("r-fixos-alerta");
+  calc.hidden = alerta.hidden = true;
+  if(f.on && !isNaN(total) && !isNaN(entrada) && np > 0){
+    const saldo = total - entrada, vp = saldo/np;
+    if(saldo < 0){
+      alerta.hidden = false;
+      alerta.textContent = "A entrada é maior que o valor total.";
+    }else{
+      calc.hidden = false;
+      calc.textContent = (f.temEntrada ? "Entrada "+moeda(entrada)+" + " : "")+
+        np+" × "+moeda(vp)+" = "+moeda(total);
+      if(Math.abs(vp*100 - Math.round(vp*100)) > 1e-6){
+        alerta.hidden = false;
+        alerta.textContent = "As parcelas não fecham em centavos exatos — o texto usará "+moeda(vp)+".";
+      }
+    }
+  }
+}
+
+/* =====================================================================
+   7. Rascunho e ciclo
+   ===================================================================== */
+const CHAVE = "mna-contrato-rascunho";
+function salvarRascunho(){
+  try{ localStorage.setItem(CHAVE, JSON.stringify(estado)); }catch(e){}
+}
+function carregarRascunho(){
+  try{
+    const bruto = localStorage.getItem(CHAVE);
+    if(!bruto) return false;
+    const d = JSON.parse(bruto);
+    if(!d || !d.contratantes) return false;
+    estado = Object.assign(estadoVazio(), d);
+    estado.remuneracao = Object.assign(estadoVazio().remuneracao, d.remuneracao || {});
+    return true;
+  }catch(e){ return false; }
+}
+
+let pendente = null;
+function atualizar(){
+  ajustarInterface();
+  renderPrevia(montarDocumento());
+  clearTimeout(pendente);
+  pendente = setTimeout(salvarRascunho, 400);
+}
+
+document.getElementById("form").addEventListener("input", function(ev){
+  const el = ev.target;
+  if(el.dataset.lista){
+    const cfg = LISTAS[el.dataset.lista];
+    estado[cfg.chave][+el.dataset.i][el.dataset.campo] = el.value;
+    if(el.dataset.campo === "tipo" || el.dataset.campo === "genero") pintarListas();
+  }else if(el.id){
+    lerFormulario();
+  }
+  atualizar();
+});
+document.getElementById("form").addEventListener("change", function(ev){
+  const el = ev.target;
+  if(el.dataset.lista){
+    const cfg = LISTAS[el.dataset.lista];
+    estado[cfg.chave][+el.dataset.i][el.dataset.campo] = el.value;
+    if(el.dataset.campo === "tipo") pintarListas();
+  }else{
+    lerFormulario();
+  }
+  atualizar();
+});
+document.getElementById("form").addEventListener("click", function(ev){
+  const add = ev.target.closest("[data-add]");
+  if(add){
+    const cfg = LISTAS[add.dataset.add];
+    estado[cfg.chave].push(cfg.novo());
+    pintarListas(); atualizar();
+    return;
+  }
+  const del = ev.target.closest("[data-del]");
+  if(del){
+    const cfg = LISTAS[del.dataset.del], i = +del.dataset.i, it = estado[cfg.chave][i];
+    const preenchido = Object.keys(it).some(function(k){
+      return k !== "tipo" && k !== "genero" && String(it[k] || "").trim() !== "";
+    });
+    if(preenchido && !confirm("Remover "+cfg.rotulo.toLowerCase()+" "+(i+1)+"? O conteúdo será perdido.")) return;
+    estado[cfg.chave].splice(i,1);
+    if(!estado[cfg.chave].length) estado[cfg.chave].push(cfg.novo());
+    pintarListas(); atualizar();
+  }
+});
+
+document.getElementById("b-word").addEventListener("click", baixarDocx);
+document.getElementById("b-exemplo").addEventListener("click", function(){
+  estado = JSON.parse(JSON.stringify(EXEMPLO));
+  pintarFormulario(); atualizar();
+});
+document.getElementById("b-limpar").addEventListener("click", function(){
+  if(!confirm("Limpar todos os campos?")) return;
+  estado = estadoVazio();
+  estado.data = new Date().toISOString().slice(0,10);
+  pintarFormulario(); atualizar();
+});
+
+if(!carregarRascunho()){
+  estado.data = new Date().toISOString().slice(0,10);
+}
+pintarFormulario();
+atualizar();
+</script>
+</body>
+</html>
